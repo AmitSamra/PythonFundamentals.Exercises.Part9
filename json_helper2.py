@@ -1,20 +1,22 @@
+# Good resource: https://www.youtube.com/watch?v=Pl4Hp8qwwes
+
 # Exercise 1
 
 import os
 import json
 import pickle
 
-path = "/Users/asamra/dev/PythonFundamentals.Exercises.Part9/data/super_smash_bros/link.json"
-path2 = "/Users/asamra/dev/PythonFundamentals.Exercises.Part9/data/super_smash_bros/"
-
-
 # Part A
-def read_json(file_path):
-	with open(file_path) as f:
-		json_input = json.load(f)
-	return json_input
 
-print(read_json(path))
+def read_json(in_file_path):
+    with open(in_file_path) as f:
+        json_input = json.load(f)
+    return json_input
+
+path1 = "/Users/asamra/dev/PythonFundamentals.Exercises.Part9/data/super_smash_bros/link.json"
+
+a = read_json(path1)
+print(a)
 
 """
 In Part A, we are using the OS Module to open and read a JSON file and then 
@@ -23,16 +25,20 @@ being deserialized into a usable Python data structure, a dictionary.
 """
 
 # Part B
-def read_all_json_files(file_path):
-	for direpath, direnames, filenames in os.walk(file_path):
-		result = []
-		for f in filenames:
-			if f.endswith('.json'):
-				json_content = read_json(os.path.join(file_path,f))
-				result.append(json_content)
-	return result
 
-print(read_all_json_files(path2))
+def read_all_json_files(path):
+    for direpath, direnames, filenames in os.walk(path):
+        result = []
+        for f in filenames:
+            if f.endswith('.json'):
+                json_content = read_json(os.path.join(path,f))
+                result.append(json_content)
+    return result
+
+path2 = "/Users/asamra/dev/PythonFundamentals.Exercises.Part9/data/super_smash_bros/"
+
+b = read_all_json_files(path2)
+print(b)
 
 """
 In Part B, we want to apply the function from Part A to all files in a particular
@@ -58,20 +64,20 @@ meaning that it's a JSON file.
 
 """
 
-
 # Part C
 
-def write_pickle(file_path, data):
-	with open(file_path, 'wb') as handler:
-		pickle.dump(data, handler)
+# out_file_path should have a .pkl extension like '/.../out_file_path.pkl
+def write_pickle(out_file_path, data):
+    with open(out_file_path, 'wb') as f:
+        pickle.dump(data, f)
 
 
 # Part D
 
-def load_pickle(file_path):
-	with open(file_path, 'rb') as handler:
-		data = pickle.load(handler)
-	return data
+def load_pickle(out_file_path):
+    with open(out_file_path, 'rb') as f:
+        data = pickle.load(f)
+    return data
 
 """
 Pickle reads (Part C) / writes (Part D) the python object as binary. It preserves the object as it was in memory.
@@ -80,13 +86,18 @@ Pickle reads (Part C) / writes (Part D) the python object as binary. It preserve
 
 # Exercise 2
 
-path3 = "/Users/asamra/dev/PythonFundamentals.Exercises.Part9/data/marvel/marvel.json"
+path3 = "/Users/asamra/dev/PythonFundamentals.Exercises.Part9/data/marvel/"
 
 content = read_all_json_files(path3)
+# This creates a list of Python dictionaries. 
 print(content)
 
-write_pickle(path3, content)
-marvel_content = load_pickle(path3)
+write_pickle(path3+'marvel_pickle.pkl', content)
+# This serializes the data in content and saves it into a file
+with open(path3+'marvel_pickle.pkl', 'rb') as f:
+    for line in f:
+        print(line)
+
+marvel_content = load_pickle(path3+'marvel_pickle.pkl')
+#This unserializes the data stored in marvel_pickle.pkl
 print(marvel_content)
-
-
